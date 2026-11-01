@@ -3,9 +3,9 @@
   "product": "traxon-unified",
   "channel": "stable",
   "enabled": true,
-  "build": 2026102101,
-  "version": "2026.10.21.1",
-  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.10.21.1/ECU_Studio_TraXon_Combined_Setup_20261021_1.exe",
-  "notes": "Добавлены раздел «О нас», контакты и проверка новых версий. Установщик включает Service Tool и Full Reader. Перед установкой завершите работу с TCU и закройте оба приложения.",
-  "sha256": "934134819626214d321d31efc0c396cbb2db92cc0f957dfb67bc630c03df5b2e"
+  "build": 2026110101,
+  "version": "2026.11.01.1",
+  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.01.1-reader-clone-rc1/ECU_Studio_TraXon_Combined_Setup_20261101_1.exe",
+  "notes": "Обновлены ридер UPLOAD5, создание копии ПО + EEPROM и автоматический выбор парной EEPROM из нового комплекта на том же ПК. Возвращены байты, скорость и оставшееся время чтения. Установщик включает Service Tool и Full Reader. Составной клон требует совпадения F194. Перед установкой завершите работу с блоком и закройте оба приложения.",
+  "sha256": "07d23e61935e953ca10db3f6205b5b50e02aa2a75e43db7948ddb691d0d6fdde"
 }
