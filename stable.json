@@ -3,9 +3,9 @@
   "product": "traxon-unified",
   "channel": "stable",
   "enabled": true,
-  "build": 2026110101,
-  "version": "2026.11.01.1",
-  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.01.1-reader-clone-rc1/ECU_Studio_TraXon_Combined_Setup_20261101_1.exe",
-  "notes": "Обновлены ридер UPLOAD5, создание копии ПО + EEPROM и автоматический выбор парной EEPROM из нового комплекта на том же ПК. Возвращены байты, скорость и оставшееся время чтения. Установщик включает Service Tool и Full Reader. Составной клон требует совпадения F194. Перед установкой завершите работу с блоком и закройте оба приложения.",
-  "sha256": "07d23e61935e953ca10db3f6205b5b50e02aa2a75e43db7948ddb691d0d6fdde"
+  "build": 2026111301,
+  "version": "2026.11.13.1",
+  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.13.1-ru-en/ECU_Studio_TraXon_Combined_Setup_20261113_1.exe",
+  "notes": "RU/EN: Service Tool и Full Reader; общий выбор языка после перезапуска. Локализованы DTC, лицензирование, EEPROM, чтение, программирование и восстановление. Единый Windows x86 установщик RU/EN сохраняет EULA v1.4 и клиентские данные. / Russian and English UI for both clients, shared language preference, localized diagnostics, licensing, EEPROM, read/write and recovery screens; unified bilingual Windows x86 setup.",
+  "sha256": "5b87688cb5f9bc9c69bdcc2833517cadd5d61c09341ffaa33157b243125f9334"
 }
