@@ -3,9 +3,9 @@
   "product": "traxon-unified",
   "channel": "stable",
   "enabled": true,
-  "build": 2026111302,
-  "version": "2026.11.13.2",
-  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.13.2-api-compat/ECU_Studio_TraXon_Combined_Setup_20261113_2.exe",
-  "notes": "Исправлено подключение к серверу: ошибка Client update required в 2026.11.13.1. Версия совместимости API 0.6.4 отделена от номера релиза; оба клиента и активация используют совместимый заголовок. RU/EN, лицензия, привязка и клиентские данные сохраняются. / Fixes server connection error Client update required in 2026.11.13.1; separates API compatibility version 0.6.4 from the public release. Preserves RU/EN, license, installation binding and client data.",
-  "sha256": "96b705129764f676826af99f1eb1ac497c4f274d917bd9348c9579695364d4e6"
+  "build": 2026111602,
+  "version": "2026.11.16.2",
+  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.16.2-eeprom-ru-en/ECU_Studio_TraXon_Combined_Setup_20261116_2.exe",
+  "notes": "Исправлена отдельная запись EEPROM на действующем CORE (проверена на TCU со Scanmatik USB); ошибки теперь показывают причину. RU/EN Service Tool и Full Reader; фиксированный UPLOAD5_NOPURGE_BE без автовыбора. Клонирование пустого TCU и перенос на другое ПО требуют отдельного обновления CORE и стендовой проверки. / EEPROM-only programming compatibility fixed and field-confirmed; actionable error messages, RU/EN clients and fixed UPLOAD5_NOPURGE_BE. Cross-F194 and empty-TCU combined cloning are not yet bench-qualified and require a separate CORE update.",
+  "sha256": "d2860dd4cb03fb5a8c47c3c51a4c31c8c7508370d353e56c390b9d5d605f4c59"
 }
