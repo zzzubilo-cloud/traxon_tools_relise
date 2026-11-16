@@ -1,0 +1,166 @@
+name: Promote checked TraXon 2026.11.16.2 RU EN installer
+on:
+  push:
+    branches:
+      - release/promote-20261116-2
+
+permissions:
+  contents: write
+
+jobs:
+  publish-verified-installer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reassemble byte-exact installer from content-addressed blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os
+          from pathlib import Path
+          import urllib.request
+
+          repo="zzzubilo-cloud/traxon_tools_relise"
+          sha_parts=[
+            "72aa5b167e9a7c7b8eafc7820e3cd733b8c96bfe",
+            "e86ccd78e71565282593dff3ef877420aa507f6b",
+            "239824245ab9be47e938bcf8be16452ba4187991",
+            "4dc990d5f7de4cc08660ccfb7ee2c1af0d3a2e1c",
+            "40970cc19f0c5f4a8b57abdbba753420227ee8c7",
+            "ac26e1cb7d92fe47cbbc266244b371f39b1b3619",
+            "59b57b00e62b4d82cfedf9e1557acf88ec44803e",
+            "1c14cfd6b9cca177a91d004bc8f28f9306176b16",
+            "e14ed103c8c4f0be0eee052f1ae0489a3aaba097",
+            "70bc82f206340a802aa458942f26f9a03f91b29e",
+            "4eb458ca864f93a49d96780cb5b98636bf6f033a",
+            "541474ecdf4585ec884dbbead4a16fd2e762c364",
+            "983a727dc942d2b22ca6454555b72f362eae6fe9",
+            "3011939e23fbc7ca3549c00908e9e86a03216a70",
+            "ddbaf77de0931e09d47fb68a195561dfbb816c3b",
+            "faa10e8a0df870430d1fd221ff9dfaf6ad393459",
+            "a29ca2ae7eeadf5a1aa5b0cb8d33c5478ab888ec",
+            "5c3c0c4e6020db63710f813e306b1e23a0d332e7",
+            "073ceb77b195162d6a307f98338f62bc1c6a9a98",
+            "840dc8f8fc95cc31597a8d611d156f64edcefa6e",
+            "75cf7ac6d87def610adb0c3270bce4464a01aff3",
+            "65a4b2cd71aa6a543fdbf49a4bc301f01d7b944c",
+            "6e921a1659b10c9b90ec13a87c5cdb2920f94e9a",
+            "5d2de470556ff99bed3323964f5a42b9b3eb4fd5",
+            "a9937f4f02f00cc2dfc9cdc007ad4ea457ae64fa",
+            "a90c05237ba40c3fc12eeceaa9fe69fd0e3c1631",
+            "ace5aac72d07fbc1e815ba9965a5c049fb7cb9a3",
+            "8449121b9a5448877dd10fa27374e3854467c06e",
+          ]
+          # Each remote Git blob contains a contiguous ASCII segment of the
+          # base64 representation of the installer, not executable material.
+          pieces=[]
+          for i,sha in enumerate(sha_parts):
+              req=urllib.request.Request(
+                  "https://api.github.com/repos/"+repo+"/git/blobs/"+sha,
+                  headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+                           "Accept":"application/vnd.github+json",
+                           "X-GitHub-Api-Version":"2022-11-28"})
+              with urllib.request.urlopen(req,timeout=40) as r:response=json.load(r)
+              segment=base64.b64decode(response["content"],validate=False)
+              object_sha=hashlib.sha1(b"blob "+str(len(segment)).encode()+b"\0"+segment).hexdigest()
+              assert object_sha==sha,(i,object_sha,sha)
+              assert len(segment)==(578408 if i==len(sha_parts)-1 else 1300000),i
+              pieces.append(segment)
+          full_base64=b"".join(pieces)
+          assert len(full_base64)==35678408,len(full_base64)
+          raw=base64.b64decode(full_base64,validate=True)
+          expected="D2860DD4CB03FB5A8C47C3C51A4C31C8C7508370D353E56C390B9D5D605F4C59"
+          actual=hashlib.sha256(raw).hexdigest().upper()
+          assert len(raw)==26758805,len(raw)
+          assert actual==expected,(actual,expected)
+          Path("ECU_Studio_TraXon_Combined_Setup_20261116_2.exe").write_bytes(raw)
+          Path("SHA256SUMS.txt").write_text(
+              expected+"  ECU_Studio_TraXon_Combined_Setup_20261116_2.exe\n",
+              encoding="ascii")
+          print("EXACT_INSTALLER_SHA256="+actual)
+          print("EXACT_INSTALLER_BYTES="+str(len(raw)))
+          print("PARTS_VERIFIED="+str(len(pieces)))
+          PY
+      - name: Confirm current stable is unchanged and new tag unused
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(sha256sum ECU_Studio_TraXon_Combined_Setup_20261116_2.exe | cut -d ' ' -f1)" = "d2860dd4cb03fb5a8c47c3c51a4c31c8c7508370d353e56c390b9d5d605f4c59"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          doc=json.loads(Path("stable.json").read_text(encoding="utf-8"))
+          assert doc["build"]==2026111302 and doc["version"]=="2026.11.13.2",doc
+          assert doc["sha256"].lower()=="96b705129764f676826af99f1eb1ac497c4f274d917bd9348c9579695364d4e6"
+          print("PRE_PUBLICATION_STABLE=UNCHANGED")
+          PY
+          if gh release view "v2026.11.16.2-eeprom-ru-en" --repo zzzubilo-cloud/traxon_tools_relise >/dev/null 2>&1; then
+            echo 'Tag already has a release; refusing to replace'; exit 1
+          fi
+          if gh api "repos/zzzubilo-cloud/traxon_tools_relise/git/ref/tags/v2026.11.16.2-eeprom-ru-en" >/dev/null 2>&1; then
+            echo 'Tag already exists; refusing to reuse'; exit 1
+          fi
+      - name: Publish installer and checksum to public releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat >RELEASE_NOTES.md <<'ENDNOTES'
+          ECU Studio TraXon Service Tool + Full Reader 2026.11.16.2 — RU / EN (Windows x86)
+
+          Русский
+          - Исправлена совместимость отдельной EEPROM-записи с действующим CORE: отсутствие новых полей empty_block/backup_status больше не мешает обычной записи.
+          - Отдельная EEPROM-запись подтверждена пользователем на реальном TCU со Scanmatik USB.
+          - В окне отказа теперь отображаются причина и путь к отчёту.
+          - Коммерческое чтение использует фиксированный UPLOAD5_NOPURGE_BE, без автоподбора других режимов. Ускорение чтения на стенде этим релизом не подтверждено.
+          - Интерфейсы Service Tool и Full Reader: русский / английский. Один установщик, сохранение лицензии и пользовательских данных.
+          - Изменённая логика составного клона с другим F194 и пустым TCU НЕ квалифицирована на стенде и требует отдельного совместимого обновления CORE; данная клиентская публикация НЕ развёртывает сервер.
+          - EEPROM transfer accepted не является подтверждением сохранности данных после выключения питания. Для критичных операций требуется контрольное чтение.
+          - Автоматические проверки: 578 тестов, 108 подтестов, 0 ошибок и пропусков.
+          - Исходный коммит: 216266620f9774cf3687dc3dc6e88ff97e0496a5.
+          - SHA-256 установщика: D2860DD4CB03FB5A8C47C3C51A4C31C8C7508370D353E56C390B9D5D605F4C59.
+
+          English
+          - Fixes EEPROM-only programming against the currently deployed CORE when new empty_block/backup_status fields are absent.
+          - EEPROM-only write succeeded on a physical TCU with a USB Scanmatik adapter, as reported by the operator.
+          - EEPROM failures now show the actual error reason and local report path.
+          - Commercial reads use fixed UPLOAD5_NOPURGE_BE with no adaptive mode selection; no field speed improvement is claimed.
+          - Unified Windows x86 installer includes RU/EN Service Tool and Full Reader; existing license data and settings are retained.
+          - Cross-F194 and blank-TCU combined cloning remains bench-unqualified and requires a separately compatible CORE update. No server changes are deployed.
+          - Positive EEPROM transfer acknowledgements do not prove power-cycle persistence.
+          - CI: 578 tests, 108 subtests, 0 failures/skips.
+          - Source: 216266620f9774cf3687dc3dc6e88ff97e0496a5.
+          - Installer SHA-256: D2860DD4CB03FB5A8C47C3C51A4C31C8C7508370D353E56C390B9D5D605F4C59.
+
+          Complete ECU operations and close both applications before updating.
+          ENDNOTES
+          gh release create "v2026.11.16.2-eeprom-ru-en" \
+            ECU_Studio_TraXon_Combined_Setup_20261116_2.exe SHA256SUMS.txt \
+            --repo zzzubilo-cloud/traxon_tools_relise --target main \
+            --title "ECU Studio TraXon 2026.11.16.2 — RU/EN, EEPROM fix" \
+            --notes-file RELEASE_NOTES.md
+      - name: Verify public release digest and leave stable.json untouched
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          url="https://api.github.com/repos/zzzubilo-cloud/traxon_tools_relise/releases/tags/v2026.11.16.2-eeprom-ru-en"
+          req=urllib.request.Request(url,headers={
+             "Authorization":"Bearer "+os.environ["GH_TOKEN"],
+             "Accept":"application/vnd.github+json"})
+          with urllib.request.urlopen(req,timeout=30) as r:release=json.load(r)
+          assert not release["draft"] and not release["prerelease"]
+          assets={a["name"]:a for a in release["assets"]}
+          assert set(assets)=={"ECU_Studio_TraXon_Combined_Setup_20261116_2.exe","SHA256SUMS.txt"}
+          setup=assets["ECU_Studio_TraXon_Combined_Setup_20261116_2.exe"]
+          assert setup["size"]==26758805
+          assert setup["digest"].lower()=="sha256:d2860dd4cb03fb5a8c47c3c51a4c31c8c7508370d353e56c390b9d5d605f4c59"
+          print("PUBLIC_RELEASE_VERIFIED=PASS")
+          print("PUBLIC_RELEASE_URL="+release["html_url"])
+          print("PUBLIC_SETUP_SHA256="+setup["digest"])
+          print("STABLE_MANIFEST_SWITCH=DEFERRED_TO_SEPARATE_VERIFIED_STEP")
+          PY
