@@ -1,11 +1,11 @@
 {
-  "schema": 1,
-  "product": "traxon-unified",
-  "channel": "stable",
-  "enabled": true,
-  "build": 2026111602,
-  "version": "2026.11.16.2",
-  "download_url": "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.16.2-eeprom-ru-en/ECU_Studio_TraXon_Combined_Setup_20261116_2.exe",
-  "notes": "Исправлена отдельная запись EEPROM на действующем CORE (проверена на TCU со Scanmatik USB); ошибки теперь показывают причину. RU/EN Service Tool и Full Reader; фиксированный UPLOAD5_NOPURGE_BE без автовыбора. Клонирование пустого TCU и перенос на другое ПО требуют отдельного обновления CORE и стендовой проверки. / EEPROM-only programming compatibility fixed and field-confirmed; actionable error messages, RU/EN clients and fixed UPLOAD5_NOPURGE_BE. Cross-F194 and empty-TCU combined cloning are not yet bench-qualified and require a separate CORE update.",
-  "sha256": "d2860dd4cb03fb5a8c47c3c51a4c31c8c7508370d353e56c390b9d5d605f4c59"
+    "schema":  1,
+    "product":  "traxon-unified",
+    "channel":  "stable",
+    "enabled":  true,
+    "build":  2026111901,
+    "version":  "2026.11.19.1",
+    "download_url":  "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.19.1-protected-cython/ECU_Studio_TraXon_Combined_Setup_20261119_1.exe",
+    "notes":  "Protected RU/EN Cython EEPROM build with IP notice. Bench-confirmed connection, EEPROM read, image programming and EEPROM write; CCP/UDS algorithms unchanged. Full Flash and recovery not separately bench-qualified.",
+    "sha256":  "ffb46416b8ff3e9f51736e40556d910ea3d86905861b3da514ef7c72c3c96829"
 }
