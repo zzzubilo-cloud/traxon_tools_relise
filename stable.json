@@ -3,9 +3,9 @@
     "product":  "traxon-unified",
     "channel":  "stable",
     "enabled":  true,
-    "build":  2026111901,
-    "version":  "2026.11.19.1",
-    "download_url":  "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.19.1-protected-cython/ECU_Studio_TraXon_Combined_Setup_20261119_1.exe",
-    "notes":  "Protected RU/EN Cython EEPROM build with IP notice. Bench-confirmed connection, EEPROM read, image programming and EEPROM write; CCP/UDS algorithms unchanged. Full Flash and recovery not separately bench-qualified.",
-    "sha256":  "ffb46416b8ff3e9f51736e40556d910ea3d86905861b3da514ef7c72c3c96829"
+    "build":  2026112102,
+    "version":  "2026.11.21.2",
+    "download_url":  "https://github.com/zzzubilo-cloud/traxon_tools_relise/releases/download/v2026.11.21.2-protected-read-recovery/ECU_Studio_TraXon_Combined_Setup_20261121_2.exe",
+    "notes":  "Protected RU/EN. Bench-confirmed automatic recovery after adapter and TCU power interruption; full software and EEPROM copy completed. UPLOAD5 and server contracts retained.",
+    "sha256":  "e96ded06894b79a77567ee603d46244603d823b4e0f61e7541e1b63406dd6209"
 }
